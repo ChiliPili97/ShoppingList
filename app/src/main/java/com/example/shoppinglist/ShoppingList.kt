@@ -25,6 +25,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -115,12 +116,21 @@ fun ShoppingApp() {
                         value = itemName,
                         onValueChange = { itemName = it },
                         singleLine = true,
+                        label = { Text("name") },
                         modifier = Modifier.padding(8.dp))
 
                     OutlinedTextField(
                         value = itemQuantity,
-                        onValueChange = { itemQuantity = it },
+                        onValueChange = { //itemQuantity = it
+                            itemQuantity = try {
+                                it.toInt()
+                                it
+                            } catch (nfe: NumberFormatException) {
+                                ""
+                            }
+                        },
                         singleLine = true,
+                        label = { Text("quantity") },
                         modifier = Modifier.padding(8.dp))
                 }
             })
@@ -160,7 +170,7 @@ fun ShoppingListItem(item: ShoppingItem,
 @Composable
 fun ShoppingItemEditor(item: ShoppingItem, onEditComplete: (String, String) -> Unit){
     var editedName by remember { mutableStateOf(item.name) }
-    var editedQuantity by remember { mutableStateOf(item.quantity) }
+    var editedQuantity by remember { mutableIntStateOf(item.quantity) }
     var isEditing by remember { mutableStateOf(item.isEditing) }
 
     Row (
